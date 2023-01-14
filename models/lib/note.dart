@@ -13,21 +13,28 @@ enum NoteState {
 class Note {
   final int? id;
   final String noteName;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final String noteBody;
   final NoteState state;
 
   Note({
     this.id,
+    this.createdAt,
     required this.noteName,
-    required this.createdAt,
     required this.state,
     this.noteBody = '',
   });
 
   ///Returns date formatted to  2022-08-18 15:04
   String getFormattedCreationDate() {
-    return DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
+    if (createdAt == null) {
+      return '';
+    }
+    try {
+      return DateFormat('yyyy-MM-dd HH:mm').format(createdAt!);
+    } on FormatException {
+      return '';
+    }
   }
 
   Color getStateColor() {

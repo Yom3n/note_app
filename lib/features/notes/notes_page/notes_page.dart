@@ -34,7 +34,7 @@ class NotesPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          throw UnimplementedError();
+          context.read<NotesCubit>().iAddNoteTapped();
         },
         child: Icon(Icons.add),
       ),

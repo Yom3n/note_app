@@ -13,15 +13,33 @@ class NotesRepository {
     final notesEntities = await database.getNotes();
     return notesEntities.map((e) => noteEntityToModel(e)).toList();
   }
+
+  Future<Note> createNote(Note input) async {
+    final createdNoteEntity =
+        await database.createNote(noteModelToEntity(input));
+    return noteEntityToModel(createdNoteEntity);
+  }
 }
 
 Note noteEntityToModel(NoteEntity entity) {
   return Note(
     id: entity.id,
     noteName: entity.name,
-    createdAt: DateTime.parse(entity.date),
+    createdAt: DateTime.tryParse(entity.date),
     noteBody: entity.body,
     state: intToState(entity.state),
+  );
+}
+
+NoteEntity noteModelToEntity(Note note) {
+  return NoteEntity(
+    id: note.id,
+    name: note.noteName,
+    body: note.noteBody,
+    date: note.createdAt == null
+        ? DateTime.now().toString()
+        : note.createdAt.toString(),
+    state: stateToInt(note.state),
   );
 }
 
@@ -36,4 +54,16 @@ NoteState intToState(int noteEntityState) {
       return NoteState.archived;
   }
   throw Exception('Unsupported state');
+}
+
+///Convert int state used in NoteEntity to NoteState
+int stateToInt(NoteState state) {
+  switch (state) {
+    case NoteState.draft:
+      return 1;
+    case NoteState.live:
+      return 2;
+    case NoteState.archived:
+      return 3;
+  }
 }
