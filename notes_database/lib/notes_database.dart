@@ -8,6 +8,8 @@ const String TABLE_NAME = 'Notes';
 class NotesDatabase {
   sql.Database? _db;
 
+  NotesDatabase();
+
   Future<void> openDatabase() async {
     _db = await sql.openDatabase('notes_db.db', version: 1,
         onCreate: (sql.Database db, int version) async {
@@ -18,13 +20,13 @@ class NotesDatabase {
   }
 
   Future<NoteEntity> createNote(NoteEntity noteEntity) async {
-    _assertDbInitialized();
+    await _openDbIfNeeded();
     final id = await _db!.insert(TABLE_NAME, noteEntity.toMap());
     return noteEntity..id = id;
   }
 
   Future<List<NoteEntity>> getNotes() async {
-    _assertDbInitialized();
+    await _openDbIfNeeded();
     List<Map<String, Object?>> maps = await _db!.query(
       TABLE_NAME,
       columns: ['name', 'date', 'body', 'state'],
@@ -38,7 +40,7 @@ class NotesDatabase {
   }
 
   Future<NoteEntity?> getNote(int id) async {
-    _assertDbInitialized();
+    await _openDbIfNeeded();
     List<Map<String, Object?>> maps = await _db!.query(TABLE_NAME,
         columns: ['name', 'date', 'body', 'state'],
         where: 'id = ?',
@@ -50,24 +52,19 @@ class NotesDatabase {
   }
 
   Future<int> updateNote(NoteEntity note) async {
-    _assertDbInitialized();
+    await _openDbIfNeeded();
     return await _db!.update(TABLE_NAME, note.toMap(),
         where: 'id = ?', whereArgs: [note.id]);
   }
 
   Future<int> archiveNote(int id) async {
+    await _openDbIfNeeded();
     final noteToArchive = await getNote(id);
     if (noteToArchive == null) {
       throw Exception('Note with id $id does not exist');
     } else {
       final updatedNote = await updateNote(noteToArchive..state = 2);
       return updatedNote;
-    }
-  }
-
-  Future<void> close() async {
-    if (_db != null) {
-      _db!.close();
     }
   }
 
@@ -79,7 +76,9 @@ class NotesDatabase {
        state INTEGER NOT NULL
      )''';
 
-  void _assertDbInitialized() {
-    assert(_db != null, 'Call openDatabase first');
+  Future<void> _openDbIfNeeded() async {
+    if (_db == null || !_db!.isOpen) {
+      await openDatabase();
+    }
   }
 }

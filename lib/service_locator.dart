@@ -4,7 +4,7 @@ import 'package:notes_database/notes_database.dart';
 
 final sl = GetIt.instance;
 
-void setup() {
+void initializeServiceLocator() {
   sl
     ..registerSingleton(NotesDatabase())
     ..registerSingleton(NotesRepository(sl()));

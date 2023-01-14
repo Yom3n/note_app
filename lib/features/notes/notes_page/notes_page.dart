@@ -1,50 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/note.dart';
+import 'package:note_app/features/notes/notes_page/bloc/notes_cubit/state.dart';
 
+import '../../../dsm/loading_indicator.dart';
+import 'bloc/notes_cubit/cubit.dart';
 
 class NotesPage extends StatelessWidget {
   const NotesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final notes = [
-      Note(
-        id: 1,
-        createdAt: DateTime.now(),
-        noteName: 'Note 1',
-        state: NoteState.live,
-      ),
-      Note(
-        id: 2,
-        createdAt: DateTime.now(),
-        noteName: 'Note 2',
-        state: NoteState.draft,
-      ),
-      Note(
-        id: 2,
-        createdAt: DateTime.now(),
-        noteName: 'Note 3',
-        state: NoteState.archived,
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
         title: Text('Your notes'),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (context, index) {
-              final note = notes[index];
-              return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: NoteListItem(
-                    note: note,
-                    onNoteDeleteTapped: () => throw UnimplementedError(),
-                    onNoteOpenedTapped: () => throw UnimplementedError(),
-                  ));
-            }),
+        child: BlocBuilder<NotesCubit, NotesState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case NotesStatus.loading:
+                return NaLoadingIndicator();
+              case NotesStatus.loaded:
+                return NotesFeed(state.notes);
+              case NotesStatus.empty:
+                return NotesFeedEmptyBody();
+              case NotesStatus.createNewNote:
+                return NotesFeed(state.notes);
+            }
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -53,6 +39,41 @@ class NotesPage extends StatelessWidget {
         child: Icon(Icons.add),
       ),
     );
+  }
+}
+
+class NotesFeedEmptyBody extends StatelessWidget {
+  const NotesFeedEmptyBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Nothing to show.\nCreate new note'),
+    );
+  }
+}
+
+class NotesFeed extends StatelessWidget {
+  final List<Note>? notes;
+
+  const NotesFeed(this.notes, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    assert(notes != null);
+    return ListView.builder(
+        itemCount: notes!.length,
+        itemBuilder: (context, index) {
+          final note = notes![index];
+          return Padding(
+              padding: EdgeInsets.symmetric(vertical: 3),
+              child: NoteListItem(
+                key: Key('Note-item-${note.id}'),
+                note: note,
+                onNoteDeleteTapped: () => throw UnimplementedError(),
+                onNoteOpenedTapped: () => throw UnimplementedError(),
+              ));
+        });
   }
 }
 

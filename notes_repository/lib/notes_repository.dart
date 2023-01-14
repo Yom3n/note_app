@@ -7,9 +7,7 @@ import 'package:notes_database/models/note_entity.dart';
 class NotesRepository {
   final NotesDatabase database;
 
-  NotesRepository(this.database) {
-    database.openDatabase();
-  }
+  NotesRepository(this.database);
 
   Future<List<Note>> getNotes() async {
     final notesEntities = await database.getNotes();
