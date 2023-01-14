@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   sqflite: ^2.2.3
-  intl: ^0.18.0
 
 
 dev_dependencies:

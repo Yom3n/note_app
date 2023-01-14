@@ -1,4 +1,5 @@
-import 'package:note_app/models/note.dart';
+
+import 'package:models/note.dart';
 
 enum NotesStatus {
   loading,

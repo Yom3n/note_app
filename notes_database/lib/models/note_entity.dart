@@ -1,7 +1,7 @@
 class NoteEntity {
   int? id;
   late String name;
-  late DateTime date;
+  late String date;
   late String body;
   late int state;
 
@@ -18,7 +18,7 @@ class NoteEntity {
   NoteEntity.fromMap(Map<String, Object?> map) {
     id = map['id'] as int?;
     name = map['name'] as String;
-    date = map['date'] as DateTime;
+    date = map['date'] as String;
     body = map['body'] as String;
     state = map['state'] as int;
   }
@@ -27,7 +27,7 @@ class NoteEntity {
     var map = <String, Object?>{
       'name': name,
       'date': date,
-      'body': body ?? '',
+      'body': body,
       'state': state,
     };
     if (id != null) {
