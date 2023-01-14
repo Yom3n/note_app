@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/note.dart';
-import 'package:note_app/features/notes/notes_page/bloc/notes_cubit/state.dart';
 
 import '../../../dsm/loading_indicator.dart';
-import 'bloc/notes_cubit/cubit.dart';
+import '../../../routes.dart';
+import 'note_feed_cubit/cubit.dart';
 
-class NotesPage extends StatelessWidget {
-  const NotesPage({Key? key}) : super(key: key);
+class NotesFeedPage extends StatelessWidget {
+  const NotesFeedPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,25 @@ class NotesPage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: BlocBuilder<NotesCubit, NotesState>(
+        child: BlocConsumer<NotesFeedCubit, NotesFeedState>(
+          listener: (context, state) {
+            if (state.status == NotesFeedStatus.createNewNote) {
+              Future.delayed(Duration.zero, () async {
+                final createdNote =
+                    await Navigator.push(context, createNoteRoute());
+                context.read<NotesFeedCubit>().iNoteCreated(createdNote);
+              });
+            }
+          },
           builder: (context, state) {
             switch (state.status) {
-              case NotesStatus.loading:
+              case NotesFeedStatus.loading:
                 return NaLoadingIndicator();
-              case NotesStatus.loaded:
+              case NotesFeedStatus.loaded:
                 return NotesFeed(state.notes);
-              case NotesStatus.empty:
+              case NotesFeedStatus.empty:
                 return NotesFeedEmptyBody();
-              case NotesStatus.createNewNote:
+              case NotesFeedStatus.createNewNote:
                 return NotesFeed(state.notes);
             }
           },
@@ -34,7 +43,7 @@ class NotesPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<NotesCubit>().iAddNoteTapped();
+          context.read<NotesFeedCubit>().iAddNoteTapped();
         },
         child: Icon(Icons.add),
       ),

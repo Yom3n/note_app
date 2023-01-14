@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/service_locator.dart';
 
-import 'features/notes/notes_page/bloc/notes_cubit/cubit.dart';
-import 'features/notes/notes_page/notes_page.dart';
+import 'features/notes/notes_feed/note_feed_cubit/cubit.dart';
+import 'features/notes/notes_feed/notes_feed_page.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +22,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-        create: (context) => NotesCubit(sl())..iInitialise(),
-        child: NotesPage(),
+        create: (context) => NotesFeedCubit(sl())..iInitialise(),
+        child: NotesFeedPage(),
       ),
     );
   }
