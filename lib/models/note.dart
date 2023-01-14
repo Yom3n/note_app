@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 enum NoteState {
   //Notein  the process of creation
   draft,
@@ -21,4 +24,20 @@ class Note {
     required this.state,
     this.noteBody = '',
   });
+
+  ///Returns date formatted to  2022-08-18 15:04
+  String getFormattedCreationDate() {
+    return DateFormat('yyyy-MM-dd HH:mm').format(createdAt);
+  }
+
+  Color getStateColor() {
+    switch (state) {
+      case NoteState.draft:
+        return Colors.lightBlueAccent;
+      case NoteState.live:
+        return Colors.greenAccent;
+      case NoteState.archived:
+        return Colors.redAccent;
+    }
+  }
 }

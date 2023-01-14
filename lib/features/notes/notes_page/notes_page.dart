@@ -31,12 +31,21 @@ class NotesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your notes'),
       ),
-      body: ListView.builder(
-          itemCount: notes.length,
-          itemBuilder: (context, index) {
-            final note = notes[index];
-            return NoteListItem(note: note);
-          }),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: ListView.builder(
+            itemCount: notes.length,
+            itemBuilder: (context, index) {
+              final note = notes[index];
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 3),
+                  child: NoteListItem(
+                    note: note,
+                    onNoteDeleteTapped: () => throw UnimplementedError(),
+                    onNoteOpenedTapped: () => throw UnimplementedError(),
+                  ));
+            }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           throw UnimplementedError();
@@ -49,11 +58,51 @@ class NotesPage extends StatelessWidget {
 
 class NoteListItem extends StatelessWidget {
   final Note note;
+  final VoidCallback onNoteOpenedTapped;
+  final VoidCallback onNoteDeleteTapped;
 
-  const NoteListItem({Key? key, required this.note}) : super(key: key);
+  const NoteListItem({
+    Key? key,
+    required this.note,
+    required this.onNoteOpenedTapped,
+    required this.onNoteDeleteTapped,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return InkWell(
+      onDoubleTap: onNoteOpenedTapped,
+      borderRadius: _getBorderRadius(),
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: _getBorderRadius(),
+          color: note.getStateColor().withAlpha(128),
+        ),
+        padding: EdgeInsets.all(5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(note.noteName,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(note.getFormattedCreationDate()),
+              ],
+            ),
+            GestureDetector(
+              onTap: onNoteDeleteTapped,
+              child: Icon(Icons.delete),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  BorderRadius _getBorderRadius() {
+    return BorderRadius.circular(12);
   }
 }
