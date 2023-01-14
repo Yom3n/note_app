@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 enum NoteState {
-  //Notein  the process of creation
+  //Note in the process of creation
   draft,
 
   // Approved note

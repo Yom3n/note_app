@@ -8,4 +8,6 @@ class NotesRepository {
   NotesRepository(this.database) {
     database.openDatabase();
   }
+
+  List<>
 }
