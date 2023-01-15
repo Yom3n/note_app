@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/note.dart';
 
-import '../../../dsm/loading_indicator.dart';
+import '../../../dsm/na_loading_indicator.dart';
+import '../../../dsm/na_page.dart';
 import '../../../routes.dart';
 import 'note_feed_cubit/cubit.dart';
 
@@ -11,37 +12,32 @@ class NotesFeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Your notes'),
+    return NaPage(
+      title: 'Your notes',
+      body: BlocConsumer<NotesFeedCubit, NotesFeedState>(
+        listener: (context, state) {
+          if (state.status == NotesFeedStatus.createNewNote) {
+            Future.delayed(Duration.zero, () async {
+              final createdNote =
+                  await Navigator.push(context, createNoteRoute());
+              context.read<NotesFeedCubit>().iNoteCreated(createdNote);
+            });
+          }
+        },
+        builder: (context, state) {
+          switch (state.status) {
+            case NotesFeedStatus.loading:
+              return NaLoadingIndicator();
+            case NotesFeedStatus.loaded:
+              return NotesFeed(state.notes);
+            case NotesFeedStatus.empty:
+              return NotesFeedEmptyBody();
+            case NotesFeedStatus.createNewNote:
+              return NotesFeed(state.notes);
+          }
+        },
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: BlocConsumer<NotesFeedCubit, NotesFeedState>(
-          listener: (context, state) {
-            if (state.status == NotesFeedStatus.createNewNote) {
-              Future.delayed(Duration.zero, () async {
-                final createdNote =
-                    await Navigator.push(context, createNoteRoute());
-                context.read<NotesFeedCubit>().iNoteCreated(createdNote);
-              });
-            }
-          },
-          builder: (context, state) {
-            switch (state.status) {
-              case NotesFeedStatus.loading:
-                return NaLoadingIndicator();
-              case NotesFeedStatus.loaded:
-                return NotesFeed(state.notes);
-              case NotesFeedStatus.empty:
-                return NotesFeedEmptyBody();
-              case NotesFeedStatus.createNewNote:
-                return NotesFeed(state.notes);
-            }
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
+      fab: FloatingActionButton(
         onPressed: () {
           context.read<NotesFeedCubit>().iAddNoteTapped();
         },
