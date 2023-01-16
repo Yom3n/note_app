@@ -9,7 +9,15 @@ class NotesRepository {
 
   NotesRepository(this.database);
 
-  Future<List<Note>> getNotes() async {
+  Future<Note?> getNoteById(int id) async {
+    final noteEntity = await database.getNote(id);
+    if (noteEntity != null) {
+      return noteEntityToModel(noteEntity);
+    }
+    return null;
+  }
+
+  Future<List<Note>?> getNotes() async {
     final notesEntities = await database.getNotes();
     return notesEntities.map((e) => noteEntityToModel(e)).toList();
   }
@@ -18,6 +26,12 @@ class NotesRepository {
     final createdNoteEntity =
         await database.createNote(noteModelToEntity(input));
     return noteEntityToModel(createdNoteEntity);
+  }
+
+  Future<Note> updateNote(Note input) async {
+    final updatedNoteEntity =
+        await database.updateNote(noteModelToEntity(input));
+    return noteEntityToModel(updatedNoteEntity);
   }
 }
 

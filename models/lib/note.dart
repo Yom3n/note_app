@@ -47,4 +47,19 @@ class Note {
         return Colors.redAccent;
     }
   }
+
+  Note copyWith({
+    int? id,
+    String? noteName,
+    String? noteBody,
+    NoteState? state,
+  }) {
+    return Note(
+      id: id ?? this.id,
+      state: state ?? this.state,
+      noteName: noteName ?? this.noteName,
+      noteBody: noteBody ?? this.noteBody,
+      createdAt: createdAt,
+    );
+  }
 }

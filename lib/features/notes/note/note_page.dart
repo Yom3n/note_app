@@ -35,7 +35,7 @@ class _NotePageState extends State<NotePage> {
   Widget build(BuildContext context) {
     return NaPage(
       title: 'Add note',
-      body: BlocConsumer<NoteCubit, NoteCubitState>(
+      body: BlocConsumer<CreateNoteCubit, NoteCubitState>(
         listener: (context, state) {
           if (state.status == NoteStatus.saved) {
             Future.delayed(Duration.zero, () {
@@ -74,7 +74,7 @@ class _NotePageState extends State<NotePage> {
                       child: Text('Save'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          context.read<NoteCubit>().iCreateNote(
+                          context.read<CreateNoteCubit>().iCreateNote(
                                 title: titleController.text,
                                 body: bodyController.text,
                               );
