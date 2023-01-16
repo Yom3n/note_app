@@ -34,4 +34,26 @@ class NotesFeedCubit extends Cubit<NotesFeedState> {
       emit(updatedState);
     }
   }
+
+  void iUpdateNoteTapped(int id) {
+    emit(NotesFeedState.editNote(notes: state.notes, noteToEditId: id));
+  }
+
+  void iNoteUpdated(Note? updatedNote) {
+    if (updatedNote == null) {
+      emit(state.copyWith(status: NotesFeedStatus.loaded));
+    } else {
+      assert(updatedNote?.id != null);
+      final notes = state.notes ?? [];
+      final indexToUpdate =
+          notes.indexWhere((element) => element.id == updatedNote.id);
+      if (indexToUpdate == -1) {
+        throw RangeError('Note doesn not exist');
+      }
+      notes[indexToUpdate] = updatedNote;
+      final updatedState =
+          state.copyWith(notes: notes, status: NotesFeedStatus.loaded);
+      emit(updatedState);
+    }
+  }
 }

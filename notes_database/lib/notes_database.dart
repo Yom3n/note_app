@@ -29,7 +29,7 @@ class NotesDatabase {
     await _openDbIfNeeded();
     List<Map<String, Object?>> maps = await _db!.query(
       TABLE_NAME,
-      columns: ['name', 'date', 'body', 'state'],
+      columns: ['id', 'name', 'date', 'body', 'state'],
       // where: '$columnId = ?',
       // whereArgs: [id]);
     );
@@ -42,7 +42,7 @@ class NotesDatabase {
   Future<NoteEntity?> getNote(int id) async {
     await _openDbIfNeeded();
     List<Map<String, Object?>> maps = await _db!.query(TABLE_NAME,
-        columns: ['name', 'date', 'body', 'state'],
+        columns: ['id', 'name', 'date', 'body', 'state'],
         where: 'id = ?',
         whereArgs: [id]);
     if (maps.isNotEmpty) {
@@ -51,20 +51,21 @@ class NotesDatabase {
     return null;
   }
 
-  Future<int> updateNote(NoteEntity note) async {
+  Future<bool> updateNote(NoteEntity note) async {
     await _openDbIfNeeded();
-    return await _db!.update(TABLE_NAME, note.toMap(),
+    final changedRows = await _db!.update(TABLE_NAME, note.toMap(),
         where: 'id = ?', whereArgs: [note.id]);
+    return changedRows == 1;
   }
 
-  Future<int> archiveNote(int id) async {
+  Future<NoteEntity> archiveNote(int id) async {
     await _openDbIfNeeded();
     final noteToArchive = await getNote(id);
     if (noteToArchive == null) {
       throw Exception('Note with id $id does not exist');
     } else {
       final updatedNote = await updateNote(noteToArchive..state = 2);
-      return updatedNote;
+      return noteToArchive;
     }
   }
 

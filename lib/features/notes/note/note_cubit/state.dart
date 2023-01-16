@@ -7,18 +7,23 @@ enum NoteStatus {
 }
 
 class NoteCubitState {
-  final Note? createdNote;
+  //Output of note page. Null, created or updated note
+  final Note? resultNote;
 
   final NoteStatus status;
   final Note? initialNote;
 
   NoteCubitState({
     required this.status,
-    this.createdNote,
+    this.resultNote,
     this.initialNote,
   });
 
   NoteCubitState copyWith({NoteStatus? status}) {
-    return NoteCubitState(status: status ?? this.status);
+    return NoteCubitState(
+      status: status ?? this.status,
+      initialNote: initialNote,
+      resultNote: resultNote,
+    );
   }
 }

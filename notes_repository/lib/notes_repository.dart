@@ -17,7 +17,7 @@ class NotesRepository {
     return null;
   }
 
-  Future<List<Note>?> getNotes() async {
+  Future<List<Note>> getNotes() async {
     final notesEntities = await database.getNotes();
     return notesEntities.map((e) => noteEntityToModel(e)).toList();
   }
@@ -31,7 +31,8 @@ class NotesRepository {
   Future<Note> updateNote(Note input) async {
     final updatedNoteEntity =
         await database.updateNote(noteModelToEntity(input));
-    return noteEntityToModel(updatedNoteEntity);
+    //TODO add check
+    return input;
   }
 }
 

@@ -15,24 +15,16 @@ class NotesFeedPage extends StatelessWidget {
     return NaPage(
       title: 'Your notes',
       body: BlocConsumer<NotesFeedCubit, NotesFeedState>(
-        listener: (context, state) {
-          if (state.status == NotesFeedStatus.createNewNote) {
-            Future.delayed(Duration.zero, () async {
-              final createdNote =
-                  await Navigator.push(context, createNoteRoute());
-              context.read<NotesFeedCubit>().iNoteCreated(createdNote);
-            });
-          }
-        },
+        listener: (context, state) => _handleNavigation(state, context),
         builder: (context, state) {
           switch (state.status) {
             case NotesFeedStatus.loading:
               return NaLoadingIndicator();
-            case NotesFeedStatus.loaded:
-              return NotesFeed(state.notes);
             case NotesFeedStatus.empty:
               return NotesFeedEmptyBody();
+            case NotesFeedStatus.loaded:
             case NotesFeedStatus.createNewNote:
+            case NotesFeedStatus.editNote:
               return NotesFeed(state.notes);
           }
         },
@@ -44,6 +36,24 @@ class NotesFeedPage extends StatelessWidget {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _handleNavigation(
+      NotesFeedState state, BuildContext context) async {
+    if (state.status == NotesFeedStatus.createNewNote) {
+      Future.delayed(Duration.zero, () async {
+        final createdNote = await Navigator.push(context, createNoteRoute());
+        context.read<NotesFeedCubit>().iNoteCreated(createdNote);
+      });
+    }
+    if (state.status == NotesFeedStatus.editNote) {
+      Future.delayed(Duration.zero, () async {
+        assert(state.noteToEditId != null);
+        final updatedNote =
+            await Navigator.push(context, editNoteRoute(state.noteToEditId!));
+        context.read<NotesFeedCubit>().iNoteUpdated(updatedNote);
+      });
+    }
   }
 }
 
@@ -76,7 +86,9 @@ class NotesFeed extends StatelessWidget {
                 key: Key('Note-item-${note.id}'),
                 note: note,
                 onNoteDeleteTapped: () => throw UnimplementedError(),
-                onNoteOpenedTapped: () => throw UnimplementedError(),
+                onNoteOpenedTapped: () {
+                  context.read<NotesFeedCubit>().iUpdateNoteTapped(note.id!);
+                },
               ));
         });
   }

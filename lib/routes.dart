@@ -8,16 +8,16 @@ import 'features/notes/note/note_page.dart';
 
 MaterialPageRoute<Note> createNoteRoute() {
   return MaterialPageRoute(
-      builder: (context) => BlocProvider(
-            create: (context) => CreateNoteCubit(sl()),
+      builder: (context) => BlocProvider<BaseNoteCubit>(
+            create: (context) => CreateNoteCubit(sl())..iInitialise(),
             child: NotePage(),
           ));
 }
 
 MaterialPageRoute<Note> editNoteRoute(int noteId) {
   return MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => CreateNoteCubit(sl()),
-        child: NotePage(),
-      ));
+      builder: (context) => BlocProvider<BaseNoteCubit>(
+            create: (context) => EditNoteCubit(sl())..iInitialise(noteId),
+            child: NotePage(),
+          ));
 }
