@@ -100,7 +100,6 @@ class NoteListItem extends StatelessWidget {
       onDoubleTap: onNoteOpenedTapped,
       borderRadius: _getBorderRadius(),
       child: Container(
-        height: 50,
         decoration: BoxDecoration(
           borderRadius: _getBorderRadius(),
           color: note.getStateColor().withAlpha(128),
@@ -109,15 +108,29 @@ class NoteListItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(note.noteName,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(note.getFormattedCreationDate()),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    note.noteName,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  if (note.noteBody.isNotEmpty)
+                    IntrinsicWidth(
+                      child: Text(
+                        note.noteBody,
+                        maxLines: 2,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  Text(note.getFormattedCreationDate()),
+                ],
+              ),
             ),
+            SizedBox(width: 10),
             GestureDetector(
               onTap: onNoteDeleteTapped,
               child: Icon(Icons.delete),
