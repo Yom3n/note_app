@@ -123,7 +123,8 @@ class NoteListItem extends StatelessWidget {
                       child: Text(
                         note.noteBody,
                         maxLines: 2,
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(
+                            fontSize: 12, fontStyle: FontStyle.italic),
                       ),
                     ),
                   Text(note.getFormattedCreationDate()),
