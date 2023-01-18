@@ -7,6 +7,7 @@ import 'package:note_app/features/notes/note/note_cubit/cubit.dart';
 import '../../../dsm/na_loading_indicator.dart';
 import '../../../dsm/na_page.dart';
 import '../../../field_validators/field_validators.dart';
+import 'note_cubit/cubit.dart';
 
 class NotePage extends StatefulWidget {
   const NotePage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _NotePageState extends State<NotePage> {
   Widget build(BuildContext context) {
     return NaPage(
       title: 'Add note',
-      body: BlocConsumer<BaseNoteCubit, NoteCubitState>(
+      body: BlocConsumer<NoteCubit, NoteCubitState>(
         listener: (context, state) {
           if (state.status == NoteStatus.saved) {
             Future.delayed(Duration.zero, () {
@@ -104,7 +105,7 @@ class _NoteAppBodyState extends State<NoteAppBody> {
                 child: Text('Save'),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    context.read<BaseNoteCubit>().iSaveTapped(
+                    context.read<NoteCubit>().iSaveTapped(
                           title: titleController.text,
                           body: bodyController.text,
                         );

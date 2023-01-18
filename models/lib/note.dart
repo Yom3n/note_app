@@ -25,6 +25,14 @@ class Note {
     this.noteBody = '',
   });
 
+  Note.empty({
+    this.id,
+    this.createdAt,
+    this.noteName = '',
+    this.state = NoteState.draft,
+    this.noteBody = '',
+  });
+
   ///Returns date formatted to  2022-08-18 15:04
   String getFormattedCreationDate() {
     if (createdAt == null) {

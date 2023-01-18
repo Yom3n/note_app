@@ -29,7 +29,7 @@ class NotesRepository {
   }
 
   Future<Note> updateNote(Note input) async {
-    final updatedNoteEntity =
+    final wasEntityUpdated =
         await database.updateNote(noteModelToEntity(input));
     //TODO add check
     return input;

@@ -1,72 +1,40 @@
 import 'package:bloc/bloc.dart';
 import 'package:models/note.dart';
+import 'package:note_app/features/notes/note/note_cubit/save_note_strategy.dart';
 import 'package:notes_repository/notes_repository.dart';
 
 import 'state.dart';
+
+export 'save_note_strategy.dart';
 export 'state.dart';
 
-abstract class BaseNoteCubit extends Cubit<NoteCubitState> {
+class NoteCubit extends Cubit<NoteCubitState> {
   final NotesRepository notesRepository;
 
-  BaseNoteCubit(this.notesRepository)
-      : super(NoteCubitState(status: NoteStatus.loading));
+  final SaveNoteStrategyBase saveNoteStrategy;
 
-  Future<void> iSaveTapped({
-    required String title,
-    required String body,
-  });
-}
+  NoteCubit({
+    required this.notesRepository,
+    required this.saveNoteStrategy,
+  }) : super(NoteCubitState(status: NoteStatus.loading));
 
-class CreateNoteCubit extends BaseNoteCubit {
-  CreateNoteCubit(NotesRepository notesRepository) : super(notesRepository);
-
-  Future<void> iInitialise() async {
+  Future<void> iInitialise({int? noteId}) async {
+    final initialNote = await saveNoteStrategy.getInitialNote(noteId);
     emit(
       NoteCubitState(
         status: NoteStatus.loaded,
-        initialNote: Note(
-          noteName: '',
-          state: NoteState.draft,
-        ),
+        initialNote: initialNote,
       ),
     );
   }
 
-  @override
   Future<void> iSaveTapped({
     required String title,
     required String body,
   }) async {
     emit(state.copyWith(status: NoteStatus.loading));
     final note = Note(noteName: title, noteBody: body, state: NoteState.live);
-    final createdNote = await notesRepository.createNote(note);
-    emit(NoteCubitState(status: NoteStatus.saved, resultNote: createdNote));
-  }
-}
-
-class EditNoteCubit extends BaseNoteCubit {
-  EditNoteCubit(NotesRepository notesRepository) : super(notesRepository);
-
-  Future<void> iInitialise(int noteId) async {
-    emit(NoteCubitState(status: NoteStatus.loading));
-    final note = await notesRepository.getNoteById(noteId);
-    emit(NoteCubitState(status: NoteStatus.loaded, initialNote: note));
-  }
-
-  @override
-  Future<void> iSaveTapped({
-    required String title,
-    required String body,
-  }) async {
-    emit(state.copyWith(status: NoteStatus.loading));
-    final note = state.initialNote!.copyWith(
-      noteBody: body,
-      noteName: title,
-    );
-    final updatedNote = await notesRepository.updateNote(note);
-    emit(NoteCubitState(
-      status: NoteStatus.saved,
-      resultNote: updatedNote,
-    ));
+    final output = await saveNoteStrategy.saveNote(note);
+    emit(NoteCubitState(status: NoteStatus.saved, resultNote: output));
   }
 }
