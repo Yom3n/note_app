@@ -41,9 +41,9 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
     assert(noteId != null);
     final initialNoteEntity = await notesRepository.getNoteById(noteId!);
     if (initialNoteEntity != null) {
-      return Note.fromNoteEntity(initialNoteEntity);
+      return initialNote = Note.fromNoteEntity(initialNoteEntity);
     }
-    return null;
+    return null; //Throw exception
   }
 
   @override
