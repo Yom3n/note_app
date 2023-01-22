@@ -13,13 +13,14 @@ dependencies:
     sdk: flutter
   get_it: ^7.2.0
   flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
+  intl: ^0.18.0
 
   notes_repository:
     path: notes_repository
   notes_database:
     path: notes_database
-  models:
-    path: models
+
 
 
 dev_dependencies:

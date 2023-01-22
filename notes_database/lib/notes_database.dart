@@ -58,14 +58,13 @@ class NotesDatabase {
     return changedRows == 1;
   }
 
-  Future<NoteEntity> archiveNote(int id) async {
+  Future<bool> archiveNote(int id) async {
     await _openDbIfNeeded();
     final noteToArchive = await getNote(id);
     if (noteToArchive == null) {
       throw Exception('Note with id $id does not exist');
     } else {
-      final updatedNote = await updateNote(noteToArchive..state = 2);
-      return noteToArchive;
+      return updateNote(noteToArchive..state = 2);
     }
   }
 

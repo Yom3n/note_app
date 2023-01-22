@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:models/note.dart';
 import 'package:notes_repository/notes_repository.dart';
 
+import '../../models/note.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -12,10 +12,11 @@ class NotesFeedCubit extends Cubit<NotesFeedState> {
   NotesFeedCubit(this.repository) : super(NotesFeedState.loading());
 
   Future<void> iInitialise() async {
-    final notes = await repository.getNotes();
-    if (notes.isEmpty) {
+    final notesEntities = await repository.getNotes();
+    if (notesEntities.isEmpty) {
       emit(NotesFeedState.empty());
     } else {
+      final notes = notesEntities.map((e) => Note.fromNoteEntity(e)).toList();
       emit(NotesFeedState.loaded(notes: notes));
     }
   }
@@ -43,7 +44,7 @@ class NotesFeedCubit extends Cubit<NotesFeedState> {
     if (updatedNote == null) {
       emit(state.copyWith(status: NotesFeedStatus.loaded));
     } else {
-      assert(updatedNote?.id != null);
+      assert(updatedNote.id != null);
       final notes = state.notes ?? [];
       final indexToUpdate =
           notes.indexWhere((element) => element.id == updatedNote.id);

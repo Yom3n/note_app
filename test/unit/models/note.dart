@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../../../models/lib/note.dart';
+import 'package:note_app/features/notes/models/note.dart';
 
 void main() {
   test('Test formatted date getter', () {

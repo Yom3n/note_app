@@ -18,7 +18,5 @@ dev_dependencies:
 
   notes_database:
     path: ../notes_database
-  models:
-    path: ../models
 
 flutter:

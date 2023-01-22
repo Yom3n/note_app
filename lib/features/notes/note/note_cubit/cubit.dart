@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:models/note.dart';
 import 'package:note_app/features/notes/note/note_cubit/save_note_strategy.dart';
 import 'package:notes_repository/notes_repository.dart';
 
+import '../../models/note.dart';
 import 'state.dart';
 
 export 'save_note_strategy.dart';

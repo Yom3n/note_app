@@ -1,5 +1,6 @@
-import 'package:models/note.dart';
 import 'package:notes_repository/notes_repository.dart';
+
+import '../../models/note.dart';
 
 abstract class SaveNoteStrategyBase {
   Future<Note?> getInitialNote(int? noteId);
@@ -22,7 +23,9 @@ class CreateNewNoteStrategy implements SaveNoteStrategyBase {
 
   @override
   Future<Note> saveNote(Note input) async {
-    return notesRepository.createNote(input);
+    final createdEntity =
+        await notesRepository.createNote(input.toNoteEntity());
+    return Note.fromNoteEntity(createdEntity);
   }
 }
 
@@ -36,16 +39,25 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
   @override
   Future<Note?> getInitialNote(int? noteId) async {
     assert(noteId != null);
-    initialNote = await notesRepository.getNoteById(noteId!);
-    return initialNote;
+    final initialNoteEntity = await notesRepository.getNoteById(noteId!);
+    if (initialNoteEntity != null) {
+      return Note.fromNoteEntity(initialNoteEntity);
+    }
+    return null;
   }
 
   @override
   Future<Note> saveNote(Note input) async {
     assert(initialNote != null);
-    return notesRepository.updateNote(initialNote!.copyWith(
+    final noteToUpdate = initialNote!.copyWith(
       noteName: input.noteName,
       noteBody: input.noteBody,
-    ));
+    );
+    final updatedNoteEntity =
+        await notesRepository.updateNote(noteToUpdate.toNoteEntity());
+    if (updatedNoteEntity != null) {
+      return Note.fromNoteEntity(updatedNoteEntity);
+    }
+    return Note.empty(); // Throw exception;
   }
 }

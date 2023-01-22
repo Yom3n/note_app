@@ -1,4 +1,6 @@
-import 'package:models/note.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../models/note.dart';
 
 enum NoteStatus {
   loading,
@@ -6,14 +8,14 @@ enum NoteStatus {
   saved,
 }
 
-class NoteCubitState {
+class NoteCubitState extends Equatable {
   //Output of note page. Null, created or updated note
   final Note? resultNote;
 
   final NoteStatus status;
   final Note? initialNote;
 
-  NoteCubitState({
+  const NoteCubitState({
     required this.status,
     this.resultNote,
     this.initialNote,
@@ -26,4 +28,11 @@ class NoteCubitState {
       resultNote: resultNote,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        status,
+        resultNote,
+        initialNote,
+      ];
 }

@@ -1,4 +1,6 @@
-import 'package:models/note.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../models/note.dart';
 
 enum NotesFeedStatus {
   loading,
@@ -8,42 +10,42 @@ enum NotesFeedStatus {
   editNote,
 }
 
-class NotesFeedState {
+class NotesFeedState extends Equatable {
   final NotesFeedStatus status;
   final List<Note>? notes;
   final int? noteToEditId;
 
-  NotesFeedState({
+  const NotesFeedState({
     required this.status,
     this.notes = const [],
     this.noteToEditId,
   });
 
-  NotesFeedState.loading({
+  const NotesFeedState.loading({
     this.status = NotesFeedStatus.loading,
     this.notes = const [],
     this.noteToEditId,
   });
 
-  NotesFeedState.loaded({
+  const NotesFeedState.loaded({
     this.status = NotesFeedStatus.loaded,
     required this.notes,
     this.noteToEditId,
   });
 
-  NotesFeedState.empty({
+  const NotesFeedState.empty({
     this.status = NotesFeedStatus.empty,
     this.notes = const [],
     this.noteToEditId,
   });
 
-  NotesFeedState.createNewNote({
+  const NotesFeedState.createNewNote({
     this.status = NotesFeedStatus.createNewNote,
     this.notes = const [],
     this.noteToEditId,
   });
 
-  NotesFeedState.editNote({
+  const NotesFeedState.editNote({
     this.status = NotesFeedStatus.editNote,
     required this.noteToEditId,
     this.notes = const [],
@@ -55,4 +57,11 @@ class NotesFeedState {
       status: status ?? this.status,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        status,
+        notes,
+        noteToEditId,
+      ];
 }
