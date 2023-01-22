@@ -23,7 +23,7 @@ class NoteCubit extends Cubit<NoteCubitState> {
     emit(
       NoteCubitState(
         status: NoteStatus.loaded,
-        initialNote: initialNote,
+        note: initialNote,
       ),
     );
   }

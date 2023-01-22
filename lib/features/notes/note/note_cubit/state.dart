@@ -13,18 +13,21 @@ class NoteCubitState extends Equatable {
   final Note? resultNote;
 
   final NoteStatus status;
-  final Note? initialNote;
+  final Note? note;
 
   const NoteCubitState({
     required this.status,
     this.resultNote,
-    this.initialNote,
+    this.note,
   });
 
-  NoteCubitState copyWith({NoteStatus? status}) {
+  NoteCubitState copyWith({
+    NoteStatus? status,
+    Note? note,
+  }) {
     return NoteCubitState(
       status: status ?? this.status,
-      initialNote: initialNote,
+      note: note ?? this.note,
       resultNote: resultNote,
     );
   }
@@ -33,6 +36,6 @@ class NoteCubitState extends Equatable {
   List<Object?> get props => [
         status,
         resultNote,
-        initialNote,
+        note,
       ];
 }

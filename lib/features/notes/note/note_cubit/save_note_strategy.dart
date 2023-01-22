@@ -43,7 +43,7 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
     if (initialNoteEntity != null) {
       return initialNote = Note.fromNoteEntity(initialNoteEntity);
     }
-    return null; //Throw exception
+    return null; //TODO Throw exception
   }
 
   @override
@@ -58,6 +58,6 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
     if (updatedNoteEntity != null) {
       return Note.fromNoteEntity(updatedNoteEntity);
     }
-    return Note.empty(); // Throw exception;
+    return Note.empty(); //TODO Throw exception;
   }
 }
