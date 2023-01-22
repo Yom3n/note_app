@@ -58,16 +58,6 @@ class NotesDatabase {
     return changedRows == 1;
   }
 
-  Future<bool> archiveNote(int id) async {
-    await _openDbIfNeeded();
-    final noteToArchive = await getNote(id);
-    if (noteToArchive == null) {
-      throw Exception('Note with id $id does not exist');
-    } else {
-      return updateNote(noteToArchive..state = 2);
-    }
-  }
-
   String _getCreateDatabaseSql() => '''CREATE TABLE $TABLE_NAME 
       (id INTEGER PRIMARY KEY NOT NULL,
        name TEXT NOT NULL,

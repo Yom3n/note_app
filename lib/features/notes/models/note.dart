@@ -124,4 +124,7 @@ class Note extends Equatable {
         state,
         noteBody,
       ];
+
+  @override
+  bool? get stringify => true;
 }

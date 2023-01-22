@@ -55,6 +55,7 @@ class NotesFeedState extends Equatable {
     return NotesFeedState(
       notes: notes ?? this.notes,
       status: status ?? this.status,
+      noteToEditId: noteToEditId,
     );
   }
 

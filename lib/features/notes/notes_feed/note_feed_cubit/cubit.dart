@@ -45,16 +45,25 @@ class NotesFeedCubit extends Cubit<NotesFeedState> {
       emit(state.copyWith(status: NotesFeedStatus.loaded));
     } else {
       assert(updatedNote.id != null);
-      final notes = state.notes ?? [];
+      final notes = List<Note>.from(state.notes ?? []);
       final indexToUpdate =
           notes.indexWhere((element) => element.id == updatedNote.id);
       if (indexToUpdate == -1) {
-        throw RangeError('Note doesn not exist');
+        throw RangeError('Note does not exist');
       }
       notes[indexToUpdate] = updatedNote;
-      final updatedState =
-          state.copyWith(notes: notes, status: NotesFeedStatus.loaded);
+      final updatedState = state.copyWith(
+        notes: notes,
+        status: NotesFeedStatus.loaded,
+      );
       emit(updatedState);
+    }
+  }
+
+  Future<void> iArchiveNote(int noteId) async {
+    final archivedNoteEntity = await repository.archiveNote(noteId);
+    if (archivedNoteEntity != null) {
+      iNoteUpdated(Note.fromNoteEntity(archivedNoteEntity));
     }
   }
 }

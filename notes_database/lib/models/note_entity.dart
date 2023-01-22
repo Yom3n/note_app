@@ -3,6 +3,10 @@ class NoteEntity {
   late String name;
   late String date;
   late String body;
+
+  // 1: draft
+  // 2: Live
+  // 3: Archived
   late int state;
 
   NoteEntity({

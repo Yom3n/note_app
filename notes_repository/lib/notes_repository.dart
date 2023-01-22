@@ -24,7 +24,20 @@ class NotesRepository {
     assert(input.id != null);
     final wasEntityUpdated = await database.updateNote(input);
     if (wasEntityUpdated) {
-      return getNoteById(input.id!);
+      return database.getNote(input.id!);
+    }
+    return null;
+  }
+
+  Future<NoteEntity?> archiveNote(int noteId) async {
+    final noteToUpdate = await database.getNote(noteId);
+    if (noteToUpdate == null) {
+      // TODO Throw
+    }
+    noteToUpdate?.state = 3;
+    final wasEntityUpdated = await database.updateNote(noteToUpdate!);
+    if (wasEntityUpdated) {
+      return database.getNote(noteId);
     }
     return null;
   }

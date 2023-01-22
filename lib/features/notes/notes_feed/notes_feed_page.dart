@@ -83,9 +83,10 @@ class NotesFeed extends StatelessWidget {
           return Padding(
               padding: EdgeInsets.symmetric(vertical: 3),
               child: NoteListItem(
-                key: Key('Note-item-${note.id}'),
+                key: Key('Note-item-${note.toString()}'),
                 note: note,
-                onNoteDeleteTapped: () => throw UnimplementedError(),
+                onNoteDeleteTapped: () =>
+                    context.read<NotesFeedCubit>().iArchiveNote(note.id!),
                 onNoteOpenedTapped: () {
                   context.read<NotesFeedCubit>().iUpdateNoteTapped(note.id!);
                 },
@@ -144,10 +145,11 @@ class NoteListItem extends StatelessWidget {
               ),
             ),
             SizedBox(width: 10),
-            GestureDetector(
-              onTap: onNoteDeleteTapped,
-              child: Icon(Icons.delete),
-            ),
+            if (note.state != NoteState.archived)
+              GestureDetector(
+                onTap: onNoteDeleteTapped,
+                child: Icon(Icons.delete),
+              ),
           ],
         ),
       ),
