@@ -34,7 +34,7 @@ class _NotePageState extends State<NotePage> {
               return NaLoadingIndicator();
             case NoteStatus.loaded:
             case NoteStatus.saved:
-              return NoteAppBody(initialNote: state.note);
+              return NoteAppBody(initialNote: state.initialNote);
           }
         },
       ),

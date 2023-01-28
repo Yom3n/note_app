@@ -17,14 +17,15 @@ class NoteCubit extends Cubit<NoteCubitState> {
 
   Future<void> iInitialise({int? noteId}) async {
     try {
-      final initialNote = await saveNoteStrategy.getInitialNote(noteId);
+      final _initialNote = await saveNoteStrategy.getInitialNote(noteId);
       emit(
         NoteCubitState(
           status: NoteStatus.loaded,
-          note: initialNote,
+          initialNote: _initialNote,
         ),
       );
     } catch (e) {
+      print(e.toString());
       emit(NoteCubitState(status: NoteStatus.error));
     }
   }
@@ -34,11 +35,12 @@ class NoteCubit extends Cubit<NoteCubitState> {
     required String body,
   }) async {
     emit(state.copyWith(status: NoteStatus.loading));
-    final note = Note(noteName: title, noteBody: body, state: NoteState.live);
+    final input = Note(noteName: title, noteBody: body, state: NoteState.live);
     try {
-      final output = await saveNoteStrategy.saveNote(note);
+      final output = await saveNoteStrategy.saveNote(input, state.initialNote);
       emit(NoteCubitState(status: NoteStatus.saved, resultNote: output));
     } catch (e) {
+      print(e.toString());
       emit(NoteCubitState(status: NoteStatus.error));
     }
   }

@@ -26,7 +26,7 @@ void main() {
         ),
         act: (cubit) => cubit.iInitialise(),
         expect: () => <NoteCubitState>[
-          NoteCubitState(status: NoteStatus.loaded, note: Note.empty()),
+          NoteCubitState(status: NoteStatus.loaded, initialNote: Note.empty()),
         ],
       );
     });
@@ -52,8 +52,8 @@ void main() {
         },
         build: () => NoteCubit(
             saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
-            initialState:
-                NoteCubitState(status: NoteStatus.loaded, note: noteToSave)),
+            initialState: NoteCubitState(
+                status: NoteStatus.loaded, initialNote: Note.empty())),
         act: (bloc) {
           bloc.iSaveTapped(
             body: noteToSave.noteBody,
@@ -61,7 +61,7 @@ void main() {
           );
         },
         expect: () => <NoteCubitState>[
-          NoteCubitState(status: NoteStatus.loading, note: noteToSave),
+          NoteCubitState(status: NoteStatus.loading, initialNote: Note.empty()),
           NoteCubitState(
             status: NoteStatus.saved,
             resultNote: noteToSave.copyWith(
@@ -89,8 +89,8 @@ void main() {
         },
         build: () => NoteCubit(
             saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
-            initialState:
-                NoteCubitState(status: NoteStatus.loaded, note: noteToSave)),
+            initialState: NoteCubitState(
+                status: NoteStatus.loaded, initialNote: Note.empty())),
         act: (bloc) {
           bloc.iSaveTapped(
             body: noteToSave.noteBody,
@@ -107,15 +107,15 @@ void main() {
   });
 
   group('Update existing note strategy', () {
-    group('iInitialise', () {
-      final tInitialNote = Note(
-        id: 123,
-        state: NoteState.live,
-        noteName: 'note name',
-        noteBody: 'note body',
-        createdAt: DateTime(2023, 01, 01),
-      );
+    final tInitialNote = Note(
+      id: 123,
+      state: NoteState.live,
+      noteName: 'note name',
+      noteBody: 'note body',
+      createdAt: DateTime(2023, 01, 01),
+    );
 
+    group('iInitialise', () {
       blocTest<NoteCubit, NoteCubitState>(
           'Test cubit is initialized with note fetched from repository',
           setUp: () {
@@ -134,7 +134,8 @@ void main() {
             bloc.iInitialise(noteId: tInitialNote.id);
           },
           expect: () => <NoteCubitState>[
-                NoteCubitState(status: NoteStatus.loaded, note: tInitialNote),
+                NoteCubitState(
+                    status: NoteStatus.loaded, initialNote: tInitialNote),
               ],
           verify: (_) {
             verify(notesRepositoryMock.getNoteById(tInitialNote.id));
@@ -153,6 +154,38 @@ void main() {
         },
         expect: () => <NoteCubitState>[
           NoteCubitState(status: NoteStatus.error),
+        ],
+      );
+    });
+
+    group('iSave', () {
+      const String updatedNoteName = 'Updated note name';
+      const String updatedNoteBody = 'Updated note body';
+      blocTest<NoteCubit, NoteCubitState>(
+        'Test updating note',
+        setUp: () {
+          when(notesRepositoryMock.updateNote(any))
+              .thenAnswer((_) async => NoteEntity(
+                    id: tInitialNote.id,
+                    name: updatedNoteName,
+                    body: updatedNoteBody,
+                    date: '2023-01-01',
+                    state: 2,
+                  ));
+        },
+        build: () => NoteCubit(
+            saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock),
+            initialState: NoteCubitState(
+                status: NoteStatus.loaded, initialNote: tInitialNote)),
+        act: (bloc) {
+          bloc.iSaveTapped(title: updatedNoteName, body: updatedNoteBody);
+        },
+        skip: 1,
+        expect: () => <NoteCubitState>[
+          NoteCubitState(
+              status: NoteStatus.saved,
+              resultNote: tInitialNote.copyWith(
+                  noteName: updatedNoteName, noteBody: updatedNoteBody))
         ],
       );
     });

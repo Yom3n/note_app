@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../models/note.dart';
 
-
 enum NoteStatus {
   loading,
   loaded,
@@ -15,12 +14,12 @@ class NoteCubitState extends Equatable {
   final Note? resultNote;
 
   final NoteStatus status;
-  final Note? note;
+  final Note? initialNote;
 
   const NoteCubitState({
     required this.status,
     this.resultNote,
-    this.note,
+    this.initialNote,
   });
 
   NoteCubitState copyWith({
@@ -29,8 +28,8 @@ class NoteCubitState extends Equatable {
   }) {
     return NoteCubitState(
       status: status ?? this.status,
-      note: note ?? this.note,
       resultNote: resultNote,
+      initialNote: initialNote,
     );
   }
 
@@ -38,6 +37,6 @@ class NoteCubitState extends Equatable {
   List<Object?> get props => [
         status,
         resultNote,
-        note,
+        initialNote,
       ];
 }

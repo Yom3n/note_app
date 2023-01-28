@@ -5,7 +5,7 @@ import '../../../../models/note.dart';
 abstract class SaveNoteStrategyBase {
   Future<Note?> getInitialNote(int? noteId);
 
-  Future<Note?> saveNote(Note? input);
+  Future<Note?> saveNote(Note? input, Note? initialNote);
 }
 
 class CreateNewNoteStrategy implements SaveNoteStrategyBase {
@@ -22,7 +22,7 @@ class CreateNewNoteStrategy implements SaveNoteStrategyBase {
   }
 
   @override
-  Future<Note?> saveNote(Note? input) async {
+  Future<Note?> saveNote(Note? input, Note? initialNote) async {
     assert(input != null);
     final createdEntity =
         await notesRepository.createNote(input!.toNoteEntity());
@@ -52,9 +52,9 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
   }
 
   @override
-  Future<Note?> saveNote(Note? input) async {
-    assert(initialNote != null);
+  Future<Note?> saveNote(Note? input, Note? initialNote) async {
     assert(input != null);
+    assert(initialNote != null);
     final noteToUpdate = initialNote!.copyWith(
       noteName: input!.noteName,
       noteBody: input.noteBody,
