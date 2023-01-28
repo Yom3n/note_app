@@ -1,11 +1,11 @@
 import 'package:notes_repository/notes_repository.dart';
 
-import '../../models/note.dart';
+import '../../../../models/note.dart';
 
 abstract class SaveNoteStrategyBase {
   Future<Note?> getInitialNote(int? noteId);
 
-  Future<Note> saveNote(Note input);
+  Future<Note?> saveNote(Note? input);
 }
 
 class CreateNewNoteStrategy implements SaveNoteStrategyBase {
@@ -22,10 +22,15 @@ class CreateNewNoteStrategy implements SaveNoteStrategyBase {
   }
 
   @override
-  Future<Note> saveNote(Note input) async {
+  Future<Note?> saveNote(Note? input) async {
+    assert(input != null);
     final createdEntity =
-        await notesRepository.createNote(input.toNoteEntity());
-    return Note.fromNoteEntity(createdEntity);
+        await notesRepository.createNote(input!.toNoteEntity());
+    if (createdEntity != null) {
+      return Note.fromNoteEntity(createdEntity);
+    } else {
+      return null;
+    }
   }
 }
 
@@ -47,10 +52,11 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
   }
 
   @override
-  Future<Note> saveNote(Note input) async {
+  Future<Note?> saveNote(Note? input) async {
     assert(initialNote != null);
+    assert(input != null);
     final noteToUpdate = initialNote!.copyWith(
-      noteName: input.noteName,
+      noteName: input!.noteName,
       noteBody: input.noteBody,
     );
     final updatedNoteEntity =

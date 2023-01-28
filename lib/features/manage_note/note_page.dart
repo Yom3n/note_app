@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/dsm/snackbar.dart';
-import 'package:note_app/features/notes/note/note_cubit/cubit.dart';
 
 import '../../../dsm/na_loading_indicator.dart';
 import '../../../dsm/na_page.dart';
 import '../../../field_validators/field_validators.dart';
-import '../models/note.dart';
+import '../../../models/note.dart';
+import 'note_cubit/cubit.dart';
 
 class NotePage extends StatefulWidget {
   const NotePage({Key? key}) : super(key: key);

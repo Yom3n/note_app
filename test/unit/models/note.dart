@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:note_app/features/notes/models/note.dart';
+import 'package:note_app/models/note.dart';
 
 void main() {
-  test('Test formatted date getter', () {
+  test('Test note formatted date getter', () {
     //Arrange
     final Note note = Note(
       id: 1,

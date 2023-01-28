@@ -3,6 +3,9 @@
 Simple note manager that let you read, create, edit and store notes in sql lite database
 
 
+Rebuilding stubs for mockito:
+flutter pub run  build_runner build --delete-conflicting-outputs
+
 
 
 Zadanie

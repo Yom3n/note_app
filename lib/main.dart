@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/service_locator.dart';
 
-import 'features/notes/notes_feed/note_feed_cubit/cubit.dart';
-import 'features/notes/notes_feed/notes_feed_page.dart';
+import 'features/notes_feed/note_feed_cubit/cubit.dart';
+import 'features/notes_feed/notes_feed_page.dart';
+
 
 
 void main() {

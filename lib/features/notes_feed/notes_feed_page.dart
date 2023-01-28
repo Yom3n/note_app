@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dsm/na_loading_indicator.dart';
 import '../../../dsm/na_page.dart';
+import '../../../models/note.dart';
 import '../../../routes.dart';
-import '../models/note.dart';
 import 'note_feed_cubit/cubit.dart';
 
 class NotesFeedPage extends StatelessWidget {

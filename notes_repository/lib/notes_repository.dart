@@ -16,13 +16,14 @@ class NotesRepository {
     return database.getNotes();
   }
 
-  Future<NoteEntity> createNote(NoteEntity input) async {
-    return database.createNote(input);
+  Future<NoteEntity?> createNote(NoteEntity? input) async {
+    assert(input != null);
+    return database.createNote(input!);
   }
 
-  Future<NoteEntity?> updateNote(NoteEntity input) async {
-    assert(input.id != null);
-    final wasEntityUpdated = await database.updateNote(input);
+  Future<NoteEntity?> updateNote(NoteEntity? input) async {
+    assert(input?.id != null);
+    final wasEntityUpdated = await database.updateNote(input!);
     if (wasEntityUpdated) {
       return database.getNote(input.id!);
     }

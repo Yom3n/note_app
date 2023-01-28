@@ -16,6 +16,9 @@ dependencies:
   equatable: ^2.0.5
   intl: ^0.18.0
 
+  bloc_test: ^9.1.0
+  mockito: ^5.3.2
+
   notes_repository:
     path: notes_repository
   notes_database:
@@ -27,6 +30,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  # Required to generate stubs for mockito
+  build_runner: ^2.2.1
 
 
 flutter:

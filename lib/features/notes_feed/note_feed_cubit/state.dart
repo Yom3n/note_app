@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../models/note.dart';
+import '../../../../models/note.dart';
+
 
 enum NotesFeedStatus {
   loading,

@@ -37,7 +37,7 @@ class Note extends Equatable {
 
   Note.fromNoteEntity(NoteEntity entity)
       : id = entity.id,
-        createdAt = DateTime.tryParse(entity.date),
+        createdAt = DateTime.tryParse(entity.date ?? ''),
         noteName = entity.name,
         noteBody = entity.body,
         state = intToState(entity.state);
@@ -70,13 +70,14 @@ class Note extends Equatable {
     String? noteName,
     String? noteBody,
     NoteState? state,
+    DateTime? createdAt,
   }) {
     return Note(
       id: id ?? this.id,
       state: state ?? this.state,
       noteName: noteName ?? this.noteName,
       noteBody: noteBody ?? this.noteBody,
-      createdAt: createdAt,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -85,8 +86,7 @@ class Note extends Equatable {
       id: id,
       name: noteName,
       body: noteBody,
-      date:
-          createdAt == null ? DateTime.now().toString() : createdAt.toString(),
+      date: createdAt.toString(),
       state: stateToInt(state),
     );
   }

@@ -1,18 +1,20 @@
-class NoteEntity {
-  int? id;
-  late String name;
-  late String date;
-  late String body;
+import 'package:equatable/equatable.dart';
+
+class NoteEntity extends Equatable {
+  late final int? id;
+  late final String name;
+  late final String? date;
+  late final String body;
 
   // 1: draft
   // 2: Live
   // 3: Archived
-  late int state;
+  late final int state;
 
   NoteEntity({
     this.id,
     required this.name,
-    required this.date,
+    this.date,
     required this.state,
     this.body = '',
   });
@@ -39,4 +41,13 @@ class NoteEntity {
     }
     return map;
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        date,
+        state,
+        body,
+      ];
 }

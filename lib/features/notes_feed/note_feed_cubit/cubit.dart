@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:notes_repository/notes_repository.dart';
 
-import '../../models/note.dart';
+import '../../../../models/note.dart';
 import 'state.dart';
 
 export 'state.dart';

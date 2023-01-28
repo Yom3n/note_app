@@ -1,22 +1,19 @@
 import 'package:bloc/bloc.dart';
-import 'package:note_app/features/notes/note/note_cubit/save_note_strategy.dart';
-import 'package:notes_repository/notes_repository.dart';
+import 'package:note_app/features/manage_note/note_cubit/save_note_strategy.dart';
 
-import '../../models/note.dart';
+import '../../../../models/note.dart';
 import 'state.dart';
 
 export 'save_note_strategy.dart';
 export 'state.dart';
 
 class NoteCubit extends Cubit<NoteCubitState> {
-  final NotesRepository notesRepository;
-
   final SaveNoteStrategyBase saveNoteStrategy;
 
   NoteCubit({
-    required this.notesRepository,
     required this.saveNoteStrategy,
-  }) : super(NoteCubitState(status: NoteStatus.loading));
+    NoteCubitState? initialState,
+  }) : super(initialState ?? NoteCubitState(status: NoteStatus.loading));
 
   Future<void> iInitialise({int? noteId}) async {
     final initialNote = await saveNoteStrategy.getInitialNote(noteId);
