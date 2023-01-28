@@ -11,12 +11,18 @@ import 'note_cubit_test.mocks.dart';
 
 @GenerateMocks([NotesRepository])
 void main() {
+  MockNotesRepository notesRepositoryMock = MockNotesRepository();
+
+  setUp(() {
+    notesRepositoryMock = MockNotesRepository();
+  });
+
   group('Create new note strategy', () {
     group('iInitialise', () {
       blocTest<NoteCubit, NoteCubitState>(
         'Should initialise with empty note and state Loaded',
         build: () => NoteCubit(
-          saveNoteStrategy: CreateNewNoteStrategy(MockNotesRepository()),
+          saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
         ),
         act: (cubit) => cubit.iInitialise(),
         expect: () => <NoteCubitState>[
@@ -26,16 +32,15 @@ void main() {
     });
 
     group('iSaveTapped', () {
-      late final MockNotesRepository notesRepositoryMock;
       final Note noteToSave = Note(
         noteName: 'Note name',
         noteBody: 'Note body',
         state: NoteState.draft,
       );
+
       blocTest<NoteCubit, NoteCubitState>(
-        'Should save note',
+        'Test saving note successfull path',
         setUp: () {
-          notesRepositoryMock = MockNotesRepository();
           when(notesRepositoryMock.createNote(any))
               .thenAnswer((_) async => NoteEntity(
                     id: 1,
@@ -75,6 +80,80 @@ void main() {
           expect(input.name, noteToSave.noteName);
           verifyNoMoreInteractions(notesRepositoryMock);
         },
+      );
+
+      blocTest<NoteCubit, NoteCubitState>(
+        'Test saving note error',
+        setUp: () {
+          when(notesRepositoryMock.createNote(any)).thenThrow(Exception());
+        },
+        build: () => NoteCubit(
+            saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
+            initialState:
+                NoteCubitState(status: NoteStatus.loaded, note: noteToSave)),
+        act: (bloc) {
+          bloc.iSaveTapped(
+            body: noteToSave.noteBody,
+            title: noteToSave.noteName,
+          );
+        },
+        // Skips loading state
+        skip: 1,
+        expect: () => <NoteCubitState>[
+          NoteCubitState(status: NoteStatus.error),
+        ],
+      );
+    });
+  });
+
+  group('Update existing note strategy', () {
+    group('iInitialise', () {
+      final tInitialNote = Note(
+        id: 123,
+        state: NoteState.live,
+        noteName: 'note name',
+        noteBody: 'note body',
+        createdAt: DateTime(2023, 01, 01),
+      );
+
+      blocTest<NoteCubit, NoteCubitState>(
+          'Test cubit is initialized with note fetched from repository',
+          setUp: () {
+            when(notesRepositoryMock.getNoteById(any))
+                .thenAnswer((_) async => NoteEntity(
+                      name: tInitialNote.noteName,
+                      state: 2,
+                      id: tInitialNote.id,
+                      body: tInitialNote.noteBody,
+                      date: '2023-01-01',
+                    ));
+          },
+          build: () => NoteCubit(
+              saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock)),
+          act: (bloc) {
+            bloc.iInitialise(noteId: tInitialNote.id);
+          },
+          expect: () => <NoteCubitState>[
+                NoteCubitState(status: NoteStatus.loaded, note: tInitialNote),
+              ],
+          verify: (_) {
+            verify(notesRepositoryMock.getNoteById(tInitialNote.id));
+            verifyNoMoreInteractions(notesRepositoryMock);
+          });
+
+      blocTest<NoteCubit, NoteCubitState>(
+        'Test streams Error when initialisation go wrong',
+        setUp: () {
+          when(notesRepositoryMock.getNoteById(any)).thenThrow(Exception());
+        },
+        build: () => NoteCubit(
+            saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock)),
+        act: (bloc) {
+          bloc.iInitialise(noteId: tInitialNote.id);
+        },
+        expect: () => <NoteCubitState>[
+          NoteCubitState(status: NoteStatus.error),
+        ],
       );
     });
   });

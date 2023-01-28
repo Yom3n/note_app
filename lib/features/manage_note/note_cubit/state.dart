@@ -7,6 +7,7 @@ enum NoteStatus {
   loading,
   loaded,
   saved,
+  error,
 }
 
 class NoteCubitState extends Equatable {

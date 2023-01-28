@@ -16,13 +16,17 @@ class NoteCubit extends Cubit<NoteCubitState> {
   }) : super(initialState ?? NoteCubitState(status: NoteStatus.loading));
 
   Future<void> iInitialise({int? noteId}) async {
-    final initialNote = await saveNoteStrategy.getInitialNote(noteId);
-    emit(
-      NoteCubitState(
-        status: NoteStatus.loaded,
-        note: initialNote,
-      ),
-    );
+    try {
+      final initialNote = await saveNoteStrategy.getInitialNote(noteId);
+      emit(
+        NoteCubitState(
+          status: NoteStatus.loaded,
+          note: initialNote,
+        ),
+      );
+    } catch (e) {
+      emit(NoteCubitState(status: NoteStatus.error));
+    }
   }
 
   Future<void> iSaveTapped({
@@ -31,7 +35,11 @@ class NoteCubit extends Cubit<NoteCubitState> {
   }) async {
     emit(state.copyWith(status: NoteStatus.loading));
     final note = Note(noteName: title, noteBody: body, state: NoteState.live);
-    final output = await saveNoteStrategy.saveNote(note);
-    emit(NoteCubitState(status: NoteStatus.saved, resultNote: output));
+    try {
+      final output = await saveNoteStrategy.saveNote(note);
+      emit(NoteCubitState(status: NoteStatus.saved, resultNote: output));
+    } catch (e) {
+      emit(NoteCubitState(status: NoteStatus.error));
+    }
   }
 }

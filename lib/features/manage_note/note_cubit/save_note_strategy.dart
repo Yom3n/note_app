@@ -29,7 +29,7 @@ class CreateNewNoteStrategy implements SaveNoteStrategyBase {
     if (createdEntity != null) {
       return Note.fromNoteEntity(createdEntity);
     } else {
-      return null;
+      throw Exception('An error occurred while saving note');
     }
   }
 }
@@ -48,7 +48,7 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
     if (initialNoteEntity != null) {
       return initialNote = Note.fromNoteEntity(initialNoteEntity);
     }
-    return null; //TODO Throw exception
+    throw Exception('An error occurred while fetching note');
   }
 
   @override
