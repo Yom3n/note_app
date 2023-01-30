@@ -12,8 +12,7 @@ class NoteCubit extends Cubit<NoteCubitState> {
 
   NoteCubit({
     required this.saveNoteStrategy,
-    NoteCubitState? initialState,
-  }) : super(initialState ?? NoteCubitState(status: NoteStatus.loading));
+  }) : super(NoteCubitState(status: NoteStatus.loading));
 
   Future<void> iInitialise({int? noteId}) async {
     try {

@@ -51,9 +51,10 @@ void main() {
                   ));
         },
         build: () => NoteCubit(
-            saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
-            initialState: NoteCubitState(
-                status: NoteStatus.loaded, initialNote: Note.empty())),
+          saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
+        ),
+        seed: () => NoteCubitState(
+            status: NoteStatus.loaded, initialNote: Note.empty()),
         act: (bloc) {
           bloc.iSaveTapped(
             body: noteToSave.noteBody,
@@ -88,9 +89,10 @@ void main() {
           when(notesRepositoryMock.createNote(any)).thenThrow(Exception());
         },
         build: () => NoteCubit(
-            saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
-            initialState: NoteCubitState(
-                status: NoteStatus.loaded, initialNote: Note.empty())),
+          saveNoteStrategy: CreateNewNoteStrategy(notesRepositoryMock),
+        ),
+        seed: () => NoteCubitState(
+            status: NoteStatus.loaded, initialNote: Note.empty()),
         act: (bloc) {
           bloc.iSaveTapped(
             body: noteToSave.noteBody,
@@ -161,6 +163,7 @@ void main() {
     group('iSave', () {
       const String updatedNoteName = 'Updated note name';
       const String updatedNoteBody = 'Updated note body';
+
       blocTest<NoteCubit, NoteCubitState>(
         'Test updating note',
         setUp: () {
@@ -174,9 +177,10 @@ void main() {
                   ));
         },
         build: () => NoteCubit(
-            saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock),
-            initialState: NoteCubitState(
-                status: NoteStatus.loaded, initialNote: tInitialNote)),
+          saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock),
+        ),
+        seed: () => NoteCubitState(
+            status: NoteStatus.loaded, initialNote: tInitialNote),
         act: (bloc) {
           bloc.iSaveTapped(title: updatedNoteName, body: updatedNoteBody);
         },
@@ -186,6 +190,27 @@ void main() {
               status: NoteStatus.saved,
               resultNote: tInitialNote.copyWith(
                   noteName: updatedNoteName, noteBody: updatedNoteBody))
+        ],
+      );
+
+      blocTest<NoteCubit, NoteCubitState>(
+        'Test error when updating note',
+        setUp: () {
+          when(notesRepositoryMock.updateNote(any)).thenThrow(Exception());
+        },
+        seed: () => NoteCubitState(
+          status: NoteStatus.loaded,
+          initialNote: tInitialNote,
+        ),
+        build: () => NoteCubit(
+          saveNoteStrategy: UpdateNoteStrategy(notesRepositoryMock),
+        ),
+        act: (bloc) {
+          bloc.iSaveTapped(title: 'Title', body: 'Body');
+        },
+        skip: 1,
+        expect: () => <NoteCubitState>[
+          NoteCubitState(status: NoteStatus.error),
         ],
       );
     });
