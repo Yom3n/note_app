@@ -24,11 +24,14 @@ class CreateNewNoteStrategy implements SaveNoteStrategyBase {
   @override
   Future<Note?> saveNote(Note? input, Note? initialNote) async {
     assert(input != null);
-    final createdEntity =
-        await notesRepository.createNote(input!.toNoteEntity());
-    if (createdEntity != null) {
-      return Note.fromNoteEntity(createdEntity);
-    } else {
+    try {
+      final createdEntity =
+          await notesRepository.createNote(input!.toNoteEntity());
+      if (createdEntity != null) {
+        return Note.fromNoteEntity(createdEntity);
+      }
+      throw Exception('An error occurred while saving note');
+    } catch (e) {
       throw Exception('An error occurred while saving note');
     }
   }
@@ -44,11 +47,15 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
   @override
   Future<Note?> getInitialNote(int? noteId) async {
     assert(noteId != null);
-    final initialNoteEntity = await notesRepository.getNoteById(noteId!);
-    if (initialNoteEntity != null) {
-      return initialNote = Note.fromNoteEntity(initialNoteEntity);
+    try {
+      final initialNoteEntity = await notesRepository.getNoteById(noteId!);
+      if (initialNoteEntity != null) {
+        return initialNote = Note.fromNoteEntity(initialNoteEntity);
+      }
+      throw Exception('An error occurred while fetching note');
+    } catch (e) {
+      throw Exception('An error occurred while fetching note');
     }
-    throw Exception('An error occurred while fetching note');
   }
 
   @override
@@ -59,11 +66,15 @@ class UpdateNoteStrategy implements SaveNoteStrategyBase {
       noteName: input!.noteName,
       noteBody: input.noteBody,
     );
-    final updatedNoteEntity =
-        await notesRepository.updateNote(noteToUpdate.toNoteEntity());
-    if (updatedNoteEntity != null) {
-      return Note.fromNoteEntity(updatedNoteEntity);
+    try {
+      final updatedNoteEntity =
+          await notesRepository.updateNote(noteToUpdate.toNoteEntity());
+      if (updatedNoteEntity != null) {
+        return Note.fromNoteEntity(updatedNoteEntity);
+      }
+      throw Exception('An error occurred while saving note');
+    } catch (e) {
+      throw Exception('An error occurred while saving note');
     }
-    return Note.empty(); //TODO Throw exception;
   }
 }
